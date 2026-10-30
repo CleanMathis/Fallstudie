@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Projektverwaltung</title>
+        <link rel="stylesheet" href="styles.css">
+    </head>
+
+    <body>
+        <!-- ================= COMMON: Leiste oben rechts (für alle Rollen) ================= -->
+        <section id="common-view" hidden>
+            <button type="button" id="common-open-password">Eigenes Passwort ändern</button>
+            <button type="button" id="logout-button">Logout</button>
+
+            <div id="common-edit-person-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Eigenes Passwort ändern</h2>
+                    <form id="common-edit-person-form">
+                        <div class="password-wrapper">
+                            <input type="password" id="common-edit-person-password" placeholder="Neues Passwort" required>
+                            <span id="common-edit-person-togglePassword">👁️</span>
+                        </div>
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="common-edit-person-close">Schließen</button>
+                        <p id="common-edit-person-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section class="login">
+            <div class="login-container">
+                <h2>Login</h2>
+                <form>
+                    <input type="email" placeholder="E-Mail" id="email-lc" required>
+                    <div class="password-wrapper">
+                        <input type="password" placeholder="Password" id="password_l-c" required>
+                        <span id="togglePassword">👁️</span>
+                    </div>
+                    <button type="submit">Login</button>
+                    <p id="login-message" role="alert"></p>
+                </form>
+            </div>
+        </section>
+
+        <!-- ================= ADMIN ================= -->
+        <section class="admin">
+            <!-- Dieses Element wird per JS ein-/ausgeblendet: Karte + Zwei-Spalten-Layout -->
+            <div class="admin-functions layout" hidden>
+                <div class="view-left">
+                    <h3>Benutzer erstellen</h3>
+                    <form id="userFormCreate">
+                        <input type="text" id="vorname" placeholder="Vorname" required>
+                        <input type="text" id="nachname" placeholder="Nachname" required>
+                        <input type="email" id="email-af" placeholder="E-Mail" required>
+                        <select id="admin-assign-rolle-person" required>
+                            <option value="" disabled selected>Rolle wählen</option>
+                        </select>
+                        <div class="password-wrapper">
+                            <input type="password" placeholder="Password" id="password_a-f" required>
+                            <span id="admin-togglePassword">👁️</span>
+                        </div>
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="closeModalCreate">Schließen</button>
+                        <p id="create-user-message" role="alert"></p>
+                    </form>
+                </div>
+                <div class="view-right">
+                    <table>
+                        <caption>Benutzer</caption>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nachname</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTable"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="admin-edit-person-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Benutzer bearbeiten</h2>
+                    <form id="admin-edit-person-form">
+                        <input type="hidden" id="admin-edit-person-id">
+                        <input type="email" id="admin-edit-person-email" placeholder="E-Mail">
+                        <input type="text" id="admin-edit-person-rolle" placeholder="Rolle">
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="admin-edit-person-close">Schließen</button>
+                        <p id="admin-edit-person-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROJEKTLEITER ================= -->
+        <section id="projektleiter-view" class="layout" hidden>
+
+            <!-- Links: Funktionen -->
+            <div class="view-left">
+                <div class="projektleiter-functions">
+                    <h3>Projekt erstellen</h3>
+                    <form id="projektleiter-create-projekt-form">
+                        <input type="text" id="projektleiter-create-projekt-titel" placeholder="Titel" required>
+                        <input type="text" id="projektleiter-create-projekt-beschreibung" placeholder="Beschreibung" required>
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="projektleiter-create-projekt-close">Schließen</button>
+                        <p id="projektleiter-create-projekt-message" role="alert"></p>
+                    </form>
+                </div>
+
+                <div class="projektleiter-functions">
+                    <h3>Mitarbeiter einem Projekt zuweisen</h3>
+                    <form id="projektleiter-assign-person-form">
+                        <select id="projektleiter-assign-person-projekt" required>
+                            <option value="" disabled selected>Projekt wählen</option>
+                        </select>
+                        <select id="projektleiter-assign-person-person" required>
+                            <option value="" disabled selected>Person wählen</option>
+                        </select>
+                        <button type="submit">Zuweisen</button>
+                        <button type="button" id="projektleiter-assign-person-close">Schließen</button>
+                        <p id="projektleiter-assign-person-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Rechts: Tabelle -->
+            <div class="view-right">
+                <div class="projektleiter-functions">
+                    <h3>Projekte</h3>
+                    <table id="projektleiter-projekt-table">
+                        <caption>Meine Projekte</caption>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Titel</th>
+                                <th>Beschreibung</th>
+                                <th>Status</th>
+                                <th>Aktionen</th>
+                            </tr>
+                        </thead>
+                        <tbody id="projektleiter-projekt-tbody"></tbody>
+                    </table>
+                    <p id="projektleiter-projekt-list-message" role="alert"></p>
+                </div>
+            </div>
+
+            <!-- Modals (position: fixed, nehmen keinen Platz im Layout ein) -->
+            <div id="projektleiter-edit-projekt-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Projekt bearbeiten</h2>
+                    <form id="projektleiter-edit-projekt-form">
+                        <input type="hidden" id="projektleiter-edit-projekt-id">
+                        <input type="text" id="projektleiter-edit-projekt-titel" placeholder="Titel">
+                        <input type="text" id="projektleiter-edit-projekt-beschreibung" placeholder="Beschreibung">
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="projektleiter-edit-projekt-close">Schließen</button>
+                        <p id="projektleiter-edit-projekt-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+
+            <div id="projektleiter-archive-projekt-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Projekt archivieren</h2>
+                    <form id="projektleiter-archive-projekt-form">
+                        <input type="hidden" id="projektleiter-archive-projekt-id">
+                        <p>Soll das Projekt <strong id="projektleiter-archive-projekt-titel"></strong> wirklich archiviert werden?</p>
+                        <button type="submit">Archivieren</button>
+                        <button type="button" id="projektleiter-archive-projekt-close">Abbrechen</button>
+                        <p id="projektleiter-archive-projekt-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MITARBEITER ================= -->
+        <section id="mitarbeiter-view" hidden>
+
+            <!-- Stufe 1: Projektauswahl (Tabelle rechts, links bleibt frei) -->
+            <div id="mitarbeiter-projekt-auswahl" class="layout">
+                <div class="view-right">
+                    <div class="mitarbeiter-functions">
+                        <h3>Projekte</h3>
+                        <table id="mitarbeiter-projekt-table">
+                            <caption>Meine Projekte</caption>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titel</th>
+                                    <th>Beschreibung</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mitarbeiter-projekt-tbody"></tbody>
+                        </table>
+                        <p id="mitarbeiter-projekt-list-message" role="alert"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stufe 2: Projektansicht (erst nach Klick auf ein Projekt sichtbar) -->
+            <div id="mitarbeiter-projekt-detail" class="layout" hidden>
+
+                <div class="view-left">
+                    <div class="mitarbeiter-functions">
+                        <h3 id="mitarbeiter-projekt-detail-titel"></h3>
+                        <button type="button" id="mitarbeiter-projekt-zurueck">Zurück zu den Projekten</button>
+                    </div>
+
+                    <div class="mitarbeiter-functions">
+                        <h3>Aufgabe erstellen</h3>
+                        <form id="mitarbeiter-create-aufgabe-form">
+                            <input type="text" id="mitarbeiter-create-aufgabe-titel" placeholder="Titel" required>
+                            <input type="text" id="mitarbeiter-create-aufgabe-beschreibung" placeholder="Beschreibung" required>
+                            <select id="mitarbeiter-create-aufgabe-status" required>
+                                <option value="" disabled selected>Status wählen</option>
+                            </select>
+                            <button type="submit">Speichern</button>
+                            <button type="button" id="mitarbeiter-create-aufgabe-close">Schließen</button>
+                            <p id="mitarbeiter-create-aufgabe-message" role="alert"></p>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="view-right">
+                    <div class="mitarbeiter-functions">
+                        <h3>Aufgaben</h3>
+                        <table id="mitarbeiter-aufgabe-table">
+                            <caption>Aufgaben im Projekt</caption>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titel</th>
+                                    <th>Beschreibung</th>
+                                    <th>Status</th>
+                                    <th>Aktionen</th>
+                                </tr>
+                            </thead>
+                            <tbody id="mitarbeiter-aufgabe-tbody"></tbody>
+                        </table>
+                        <p id="mitarbeiter-aufgabe-list-message" role="alert"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modals -->
+            <div id="mitarbeiter-edit-aufgabe-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Aufgabe bearbeiten</h2>
+                    <form id="mitarbeiter-edit-aufgabe-form">
+                        <input type="hidden" id="mitarbeiter-edit-aufgabe-id">
+                        <input type="text" id="mitarbeiter-edit-aufgabe-titel" placeholder="Titel">
+                        <input type="text" id="mitarbeiter-edit-aufgabe-beschreibung" placeholder="Beschreibung">
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="mitarbeiter-edit-aufgabe-close">Schließen</button>
+                        <p id="mitarbeiter-edit-aufgabe-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+
+            <div id="mitarbeiter-change-aufgabe-status-modal" class="modal" hidden>
+                <div class="modal-content">
+                    <h2>Status ändern</h2>
+                    <form id="mitarbeiter-change-aufgabe-status-form">
+                        <input type="hidden" id="mitarbeiter-change-aufgabe-status-id">
+                        <select id="mitarbeiter-change-aufgabe-status-select" required>
+                            <option value="" disabled selected>Status wählen</option>
+                        </select>
+                        <button type="submit">Speichern</button>
+                        <button type="button" id="mitarbeiter-change-aufgabe-status-close">Schließen</button>
+                        <p id="mitarbeiter-change-aufgabe-status-message" role="alert"></p>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= NUTZER ================= -->
+        <section id="nutzer-view" hidden>
+
+            <!-- Stufe 1: Projektauswahl (Tabelle rechts, links bleibt frei) -->
+            <div id="nutzer-projekt-auswahl" class="layout">
+                <div class="view-right">
+                    <div class="nutzer-functions">
+                        <h3>Projekte</h3>
+                        <table id="nutzer-projekt-table">
+                            <caption>Meine Projekte</caption>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titel</th>
+                                    <th>Beschreibung</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nutzer-projekt-tbody"></tbody>
+                        </table>
+                        <p id="nutzer-projekt-list-message" role="alert"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stufe 2: Projektansicht (erst nach Klick auf ein Projekt sichtbar) -->
+            <div id="nutzer-projekt-detail" class="layout" hidden>
+
+                <div class="view-left">
+                    <div class="nutzer-functions">
+                        <h3 id="nutzer-projekt-detail-titel"></h3>
+                        <button type="button" id="nutzer-projekt-zurueck">Zurück zu den Projekten</button>
+                    </div>
+                </div>
+
+                <div class="view-right">
+                    <div class="nutzer-functions">
+                        <h3>Aufgaben</h3>
+                        <table id="nutzer-aufgabe-table">
+                            <caption>Aufgaben im Projekt</caption>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Titel</th>
+                                    <th>Beschreibung</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="nutzer-aufgabe-tbody"></tbody>
+                        </table>
+                        <p id="nutzer-aufgabe-list-message" role="alert"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="api.js"></script>
+    </body>
+</html>

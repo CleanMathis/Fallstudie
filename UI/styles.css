@@ -1,0 +1,373 @@
+/* ==========================================================
+   1. FARBEN UND WERTE ZENTRAL
+   Änderst du hier einen Wert, ändert sich die ganze Seite.
+   ========================================================== */
+:root {
+    /* Hintergründe */
+    --color-bg: azure;
+    --color-surface: rgb(245, 242, 238);
+    --color-white: #ffffff;
+    --color-overlay: rgba(0, 0, 0, 0.45);
+
+    /* Text */
+    --color-text: #222222;
+    --color-muted: #666666;
+
+    /* Linien und Eingabefelder */
+    --color-border: #cccccc;
+    --color-focus: rgba(76, 175, 80, 0.25);
+
+    /* Buttons */
+    --color-primary: #4caf50;
+    --color-primary-hover: #45a049;
+    --color-secondary: #e0e0e0;
+    --color-secondary-hover: #d0d0d0;
+    --color-danger: #e53935;
+    --color-danger-hover: #c62828;
+
+    /* Meldungen und Tabellen */
+    --color-error: #c62828;
+    --color-row-hover: #e8f5e9;
+    --color-success: #2e7d32;
+
+    /* Abstände, Ecken, Schatten */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --space-sm: 10px;
+    --space-md: 20px;
+    --space-lg: 30px;
+    --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.25);
+
+    /* Layout: Breite der linken Spalte (Funktionen) */
+    --left-column-width: 380px;
+}
+
+/* Verhindert, dass display: block o. Ä. das hidden-Attribut überschreibt */
+[hidden] {
+    display: none !important;
+}
+
+/* ==========================================================
+   2. GRUNDLAYOUT
+   ========================================================== */
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+
+h2, h3 {
+    color: var(--color-text);
+}
+
+/* ==========================================================
+   3. LOGIN
+   ========================================================== */
+.login {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.login-container {
+    width: 350px;
+    padding: var(--space-lg);
+    background-color: var(--color-surface);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+}
+
+/* ==========================================================
+   4. BEREICHE (Admin, Projektleiter, Mitarbeiter, Common)
+   Breite für zwei Spalten erhöht (vorher 1000px)
+   ========================================================== */
+.admin,
+#projektleiter-view,
+#mitarbeiter-view,
+#nutzer-view,
+#common-view {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: var(--space-lg);
+}
+
+.admin-functions,
+.projektleiter-functions,
+.mitarbeiter-functions,
+.nutzer-functions,
+.common-functions {
+    background-color: var(--color-surface);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm);
+    padding: var(--space-md);
+    margin-bottom: var(--space-lg);
+}
+
+/* ==========================================================
+   4a. LEISTE OBEN RECHTS (Passwort ändern + Logout)
+   ========================================================== */
+#common-view {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-sm);
+    padding-bottom: 0;
+}
+
+#common-view > button {
+    width: auto;
+    margin-top: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+/* ==========================================================
+   4b. ZWEI-SPALTEN-LAYOUT
+   Links: Funktionen (.view-left), rechts: Tabellen (.view-right).
+   Die rechte Spalte bleibt beim Scrollen im Bild (sticky).
+   ========================================================== */
+.layout {
+    display: grid;
+    grid-template-columns: var(--left-column-width) minmax(0, 1fr);
+    gap: var(--space-lg);
+    align-items: start; /* nötig, damit sticky funktioniert */
+}
+
+.view-left {
+    grid-column: 1;
+    min-width: 0;
+}
+
+.view-right {
+    grid-column: 2; /* steht immer rechts, auch wenn links nichts ist */
+    min-width: 0;
+    position: sticky;
+    top: var(--space-md);
+    max-height: calc(100vh - 2 * var(--space-md));
+    overflow-y: auto;
+    padding: 4px; /* damit der Schatten der Karten nicht abgeschnitten wird */
+}
+
+/* Letzte Karte in einer Spalte braucht keinen Abstand nach unten */
+.view-left > :last-child,
+.view-right > :last-child {
+    margin-bottom: 0;
+}
+
+/* Admin: das Layout steckt in der Karte selbst, die Tabelle braucht dort keine Extra-Polsterung */
+.admin-functions.layout .view-right {
+    padding: 0;
+}
+
+/* Schmale Bildschirme: wieder untereinander, nichts klebt fest */
+@media (max-width: 900px) {
+    .layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .view-left,
+    .view-right {
+        grid-column: auto;
+    }
+
+    .view-right {
+        position: static;
+        max-height: none;
+        overflow-y: visible;
+        padding: 0;
+    }
+
+    .view-left > :last-child {
+        margin-bottom: var(--space-lg);
+    }
+}
+
+/* ==========================================================
+   5. FORMULARELEMENTE
+   ========================================================== */
+input,
+select {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: var(--space-sm);
+    padding: var(--space-sm);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    background-color: var(--color-white);
+    color: var(--color-text);
+    font-size: 16px;
+}
+
+/* Versteckte Felder (z. B. IDs fürs Bearbeiten) sollen unsichtbar bleiben */
+input[type="hidden"] {
+    display: none;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px var(--color-focus);
+}
+
+/* Platz für das Auge nur im Passwortfeld */
+.password-wrapper {
+    position: relative;
+}
+
+.password-wrapper input {
+    padding-right: 40px;
+}
+
+#togglePassword,
+#admin-togglePassword,
+#common-edit-person-togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ==========================================================
+   6. BUTTONS
+   ========================================================== */
+button {
+    display: block;
+    width: 100%;
+    margin-top: var(--space-sm);
+    padding: var(--space-sm);
+    box-sizing: border-box;
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--color-primary-hover);
+}
+
+/* Schließen/Abbrechen: grau statt grün, ohne HTML-Änderung */
+button[type="button"] {
+    background-color: var(--color-secondary);
+    color: var(--color-text);
+}
+
+button[type="button"]:hover {
+    background-color: var(--color-secondary-hover);
+}
+
+/* Archivieren: rot */
+#projektleiter-archive-projekt-form button[type="submit"] {
+    background-color: var(--color-danger);
+}
+
+#projektleiter-archive-projekt-form button[type="submit"]:hover {
+    background-color: var(--color-danger-hover);
+}
+
+/* ==========================================================
+   7. TABELLEN
+   ========================================================== */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: var(--color-white);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+caption {
+    padding: var(--space-sm);
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+    color: var(--color-text);
+}
+
+th,
+td {
+    padding: var(--space-sm);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+}
+
+th {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Zeilen zum Anklicken */
+tbody tr {
+    cursor: pointer;
+}
+
+tbody tr:hover {
+    background-color: var(--color-row-hover);
+}
+
+/* Aktions-Buttons in Tabellenzellen: klein und nebeneinander */
+td button {
+    display: inline-block;
+    width: auto;
+    margin: 0 var(--space-sm) 0 0;
+    padding: 6px 12px;
+    font-size: 14px;
+}
+
+#nutzer-aufgabe-tbody tr {
+    cursor: default;
+}
+
+/* ==========================================================
+   8. MODAL (Pop-up)
+   ========================================================== */
+.modal {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-md);
+    background-color: var(--color-overlay);
+    z-index: 1000;
+}
+
+.modal-content {
+    width: 100%;
+    max-width: 420px;
+    padding: var(--space-lg);
+    background-color: var(--color-surface);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+}
+
+.modal-content h2 {
+    margin-top: 0;
+}
+
+.modal strong {
+    color: var(--color-danger);
+}
+
+/* ==========================================================
+   9. MELDUNGEN
+   ========================================================== */
+p[role="alert"] {
+    margin: var(--space-sm) 0 0;
+    font-size: 14px;
+    color: var(--color-error);
+}
+
+/* Erfolgsmeldung: api.js setzt die Klasse "success" */
+p[role="alert"].success {
+    color: var(--color-success);
+}
