@@ -1,0 +1,80 @@
+CREATE TABLE `rolle` (
+	`rolle_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`rolle` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	PRIMARY KEY (`rolle_id`) USING BTREE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=5
+;
+
+CREATE TABLE `status` (
+	`status_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`status` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	PRIMARY KEY (`status_id`) USING BTREE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=4
+;
+
+CREATE TABLE `projekt` (
+	`projekt_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`titel` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`beschreibung` VARCHAR(50) NULL DEFAULT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`archiviert` TINYINT(1) NULL DEFAULT NULL,
+	PRIMARY KEY (`projekt_id`) USING BTREE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=2
+;
+
+CREATE TABLE `aufgabe` (
+	`aufgabe_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`titel` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`beschreibung` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`status` INT(11) NOT NULL,
+	`projekt_id` INT(11) NOT NULL,
+	PRIMARY KEY (`aufgabe_id`) USING BTREE,
+	INDEX `projekt_id` (`projekt_id`) USING BTREE,
+	INDEX `status` (`status`) USING BTREE,
+	CONSTRAINT `projektid` FOREIGN KEY (`projekt_id`) REFERENCES `projekt` (`projekt_id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `status_id` FOREIGN KEY (`status`) REFERENCES `status` (`status_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=2
+;
+
+CREATE TABLE `person` (
+	`person_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`vorname` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`nachname` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`email` VARCHAR(50) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	`rolle_id` INT(11) NOT NULL,
+	`password` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_uca1400_ai_ci',
+	PRIMARY KEY (`person_id`) USING BTREE,
+	UNIQUE INDEX `uq_person_email` (`email`) USING BTREE,
+	INDEX `rolle_id` (`rolle_id`) USING BTREE,
+	CONSTRAINT `rolle_id` FOREIGN KEY (`rolle_id`) REFERENCES `rolle` (`rolle_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=5
+;
+
+CREATE TABLE `projekt_mitarbeiter` (
+	`pm_id` INT(11) NOT NULL AUTO_INCREMENT,
+	`person_id` INT(11) NOT NULL,
+	`projekt_id` INT(11) NOT NULL,
+	PRIMARY KEY (`pm_id`) USING BTREE,
+	INDEX `person_id` (`person_id`) USING BTREE,
+	INDEX `projekt` (`projekt_id`) USING BTREE,
+	CONSTRAINT `person_id` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `projekt` FOREIGN KEY (`projekt_id`) REFERENCES `projekt` (`projekt_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COLLATE='utf8mb4_uca1400_ai_ci'
+ENGINE=InnoDB
+AUTO_INCREMENT=4
+;
