@@ -30,6 +30,6 @@ bsp.connection.py
 ```
 ## App nutzen:
 1. Rollen in DB anlegen: admin, projektleiter, mitarbeiter, nutzer
-2. Status anlegen: offen, Bearbeitung, Abgeschlossen
+2. Status anlegen: offen, in Bearbeitung, erledigt
 3. Benutzer anlegen: In der Datenbank direkt. Vorher einmal mit werkzeug.security generate_password_hash, das gewünschte Passwort hashen. 
 4. App mittels ```python -m flask --app app run``` starten
