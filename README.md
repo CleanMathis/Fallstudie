@@ -1,12 +1,35 @@
-für die connection.py müsste man einmal das hier verwenden:
+# Das ist die erste Aufgabe aus einer Fallstudie. 
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+## Aufgabe:
+- Man soll KI teilweise einsetzen, um eine Webanwendug zu entwickeln. 
+- Verschiedene Rollen, mit unterschiedlichen Funktionen
+- Rollen bedingte Ansichten
 
-Database_URL =  "mysql+pymysql://"Nutzer":"Passwort"=@localhost:"Port"/"Name der Datenbank""
+## Voraussetzung
+- Python 3.14
+- Flask
+- SQLAlchemy
 
-engine = create_engine(Database_URL, echo=True)
-
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-die zustäzlichen "" sind durch eigenen Variablen zu erstzen
+## Struktur
+```
+db
+|___entity
+    |___api.py
+    |___classes.py
+    |___functions.py
+    |___sqlcode.txt
+|___ __init__.py
+|___connection.py
+UI
+|___api.js
+|___Login.html
+|___styles.css
+.gitignore
+app.py
+bsp.connection.py
+```
+## App nutzen:
+1. Rollen in DB anlegen: admin, projektleiter, mitarbeiter, nutzer
+2. Status anlegen: offen, Bearbeitung, Abgeschlossen
+3. Benutzer anlegen: In der Datenbank direkt. Vorher einmal mit werkzeug.security generate_password_hash, das gewünschte Passwort hashen. 
+4. App mittels ```python -m flask --app app run``` starten
