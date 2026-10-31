@@ -11,11 +11,12 @@ from db.entity.classes import (
 )
 
 
+#Admin Funktionen
 def create_person(session, current_user, vorname, nachname, email, rolle_id, password):
-    if current_user.rolle == "admin":
+    if current_user.rolle == "admin": #Berechtigungsprüfung, da nur Admin ein neues Benutzerkonto anlegen darf
         person = Person(vorname=vorname, nachname=nachname, email=email, rolle_id=rolle_id, password=hash_password(password))
-        session.add(person)
-        session.commit()
+        session.add(person) #fügt hinzu
+        session.commit() #speichert in der Datenbank
         return person
     else:
         raise ValueError("Nur Admins dürfen nutzer anlegen.")
@@ -48,6 +49,7 @@ def edit_person(session, current_user,person_id, email, rolle, password):
         raise ValueError("E-Mail existiert bereits")
     return person
 
+#Projektleiter Funktionen
 def create_projekt(session, current_user, titel, beschreibung):
     if current_user.rolle == "projektleiter":
         projekt = Projekt(titel=titel, beschreibung=beschreibung)
@@ -91,6 +93,7 @@ def assign_person_to_projekt(session, current_user, projekt_id, person_id):
     else:
         raise ValueError("Nur Projektleiter können eine Person einem Projekt zuweisen.")
 
+#Mitarbeiter Funktionen
 def create_aufgabe(session, current_user, titel, beschreibung, status_id, projekt_id):
     if current_user.rolle != "mitarbeiter":
         raise ValueError("Nur Mitarbeiter sehen Aufgaben.")
@@ -160,7 +163,7 @@ def change_aufgabe_status(session, current_user, aufgabe_id, status_id, projekt_
     session.commit()
     return aufgabe
 
-
+#Hilfsfunktionen
 def get_rolle_id(session, rolle):
     rolle = session.query(Rolle).filter_by(rolle=rolle).first()
     if rolle is None:
@@ -209,6 +212,7 @@ def get_rolle(session, rolle_id):
         raise ValueError("ist keine rollen_id")
     return rolle_objekt.rolle
 
+#Visualisierungs Funktionen
 def list_users(session, current_user):
     """Alle Personen für die Admin-Tabelle (ohne Passwort)."""
     if current_user.rolle != "admin":
@@ -229,14 +233,15 @@ def list_users(session, current_user):
 
 
 def list_mitarbeiter(session, current_user):
-    """Nur Mitarbeiter, für das Zuweisen-Dropdown des Projektleiters."""
+    """Nur erlaubte Rollen, für das Zuweisen-Dropdown des Projektleiters."""
     if current_user.rolle != "projektleiter":
         raise ValueError("Nur Projektleiter dürfen Mitarbeiter auflisten.")
 
+    erlaubte_rollen = ["nutzer", "mitarbeiter"]
     personen = (
         session.query(Person)
         .join(Rolle, Person.rolle_id == Rolle.rolle_id)
-        .filter(Rolle.rolle == "mitarbeiter")
+        .filter(Rolle.rolle.in_(erlaubte_rollen))
         .order_by(Person.nachname)
         .all()
     )

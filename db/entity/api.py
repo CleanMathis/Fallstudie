@@ -77,7 +77,7 @@ def api_route(required=(), login_required=True, json_body=True):
         return wrapper
     return decorator
 
-
+#Login
 @bp.route("/login", methods=["POST"])
 @api_route(required=("email", "password"), login_required=False)
 def login_route(db_session, current_user, data):
@@ -95,6 +95,7 @@ def login_route(db_session, current_user, data):
     session["rolle"] = rolle
     return jsonify({"person_id": person.person_id, "name": person.nachname, "rolle": rolle})
 
+#Admin Funktionen Routen
 
 @bp.route("/admin-create", methods=["POST"])
 @api_route(required=("vorname", "nachname", "email", "password", "rolle"))
@@ -124,6 +125,7 @@ def edit_user_route(db_session, current_user, data):
     )
     return jsonify({"message": "Person wurde erfolgreich bearbeitet"}), 200
 
+#Projektleiter Funktionen Routen
 @bp.route("/project-create", methods=["POST"])
 @api_route(required=("titel", "beschreibung"))
 def create_project_route(db_session, current_user, data):
@@ -167,6 +169,7 @@ def person_to_project_route(db_session, current_user, data):
                             )
     return jsonify({"message": "Person ist teil des Projekts"}), 200
 
+#Mitarbeiter Funktionen Routen
 @bp.route("/aufgabe-erstellen", methods=["POST"])
 @api_route(required=("projekt_id", "titel", "beschreibung", "status"))
 def create_aufgabe_route(db_session, current_user, data):
@@ -209,6 +212,7 @@ def logout():
     session.clear()
     return jsonify({"message": "Ausgeloggt"}), 200
 
+#Visualisierung in der UI
 @bp.route("/users", methods=["GET"])
 @api_route(json_body=False)
 def get_users(db_session, current_user, data):

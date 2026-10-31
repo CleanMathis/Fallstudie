@@ -12,6 +12,7 @@ class Person(Base):
     email = Column(String(50), unique=True, index=True)
     rolle_id = Column(Integer, ForeignKey('rolle.rolle_id'))
     password = Column(String(255))
+    #Das ist die Verbindung zur Rolle und sie refereniziert Person
     rolle_rel = relationship("Rolle", backref="person")
 
 class Aufgabe(Base):
@@ -52,4 +53,4 @@ class ProjektMitarbeiter(Base):
     projekt_id = Column(Integer, ForeignKey('projekt.projekt_id'))
     person_id = Column(Integer, ForeignKey('person.person_id'))
     projekt_rel = relationship("Projekt", backref="projekt_mitarbeiter")
-    person_rel = relationship("Person", backref="projekt_mitarbeiter")
+    person_rel = relationship("Person", backref="projekt_mitarbeiter") 
