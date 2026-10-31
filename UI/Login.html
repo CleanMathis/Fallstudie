@@ -112,7 +112,7 @@
                 </div>
 
                 <div class="projektleiter-functions">
-                    <h3>Mitarbeiter einem Projekt zuweisen</h3>
+                    <h3>Person einem Projekt zuweisen</h3>
                     <form id="projektleiter-assign-person-form">
                         <select id="projektleiter-assign-person-projekt" required>
                             <option value="" disabled selected>Projekt wählen</option>
@@ -129,7 +129,7 @@
 
             <!-- Rechts: Tabelle -->
             <div class="view-right">
-                <div class="projektleiter-functions">
+                <div id="projektleiter-projekt-auswahl" class="projektleiter-functions">
                     <h3>Projekte</h3>
                     <table id="projektleiter-projekt-table">
                         <caption>Meine Projekte</caption>
@@ -146,8 +146,26 @@
                     </table>
                     <p id="projektleiter-projekt-list-message" role="alert"></p>
                 </div>
-            </div>
-
+            
+            <!-- Hier wird ermöglicht, dass ein Projektleiter ein Projekt anklickt und die Aufgaben sehen kann-->
+            <div id="projektleiter-projekt-detail" class="projektleiter-functions" hidden>
+                <button type="button" id="projektleiter-projekt-zurueck">Zurück zu den Projekten</button>
+                <h3 id="projektleiter-projekt-detail-titel"></h3>
+                <table id="projektleiter-aufgabe-table">
+                <caption>Aufgaben</caption>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Titel</th>
+                        <th>Beschreibung</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="projektleiter-aufgabe-tbody"></tbody>
+            </table>
+            <p id="projektleiter-aufgabe-list-message" role="alert"></p>
+        </div>
+    </div>
             <!-- Modals (position: fixed, nehmen keinen Platz im Layout ein) -->
             <div id="projektleiter-edit-projekt-modal" class="modal" hidden>
                 <div class="modal-content">

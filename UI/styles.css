@@ -274,6 +274,7 @@ button[type="button"]:hover {
     background-color: var(--color-danger-hover);
 }
 
+#projektleiter-aufgabe-tbody tr { cursor: default; }
 /* ==========================================================
    7. TABELLEN
    ========================================================== */

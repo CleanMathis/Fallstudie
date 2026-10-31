@@ -199,6 +199,8 @@ const views = {
     nutzer: $("nutzer-view"),
     nutzerAuswahl: $("nutzer-projekt-auswahl"),
     nutzerDetail: $("nutzer-projekt-detail"),
+    projektleiterDetail: $("projektleiter-projekt-detail"),
+    projektleiterAuswahl: $("projektleiter-projekt-auswahl")
 };
 function hideAllViews() {
     Object.values(views).forEach((view) => (view.hidden = true));
@@ -217,6 +219,8 @@ const roleViews = {
     projektleiter: {
         show() {
             views.projektleiter.hidden = false;
+            views.projektleiterDetail.hidden = true;
+            views.projektleiterAuswahl.hidden = false;
         },
         load: () => Promise.all([loadProjects(), loadPersons()])
     },
@@ -388,7 +392,8 @@ async function loadProjects() {
             (projekt) => [
                 actionButton("Bearbeiten", () => openEditProject(projekt)),
                 actionButton("Archivieren", () => openArchiveProject(projekt))
-            ]
+            ],
+            openProjectProjektleiter
         );
 
         fillSelect(
@@ -490,9 +495,41 @@ function initProjektleiter() {
         "projektleiter-assign-person-form",
         "projektleiter-assign-person-message"
     );
+$("projektleiter-projekt-zurueck").addEventListener("click", closeProjectProjektleiter);
+
 }
 
+async function openProjectProjektleiter(projekt) {
+    currentProjekt = projekt;
+    views.projektleiterAuswahl.hidden = true;
+    views.projektleiterDetail.hidden = false;
+    $("projektleiter-projekt-detail-titel").textContent = projekt.titel;
+    setMessage("projektleiter-aufgabe-list-message");
+    await loadTasksProjektleiter();
+}
 
+function closeProjectProjektleiter() {
+    currentProjekt = null;
+    $("projektleiter-aufgabe-tbody").replaceChildren();
+    views.projektleiterDetail.hidden = true;
+    views.projektleiterAuswahl.hidden = false;
+    setMessage("projektleiter-aufgabe-list-message");
+}
+
+async function loadTasksProjektleiter() {
+    if (!currentProjekt) return;
+    try {
+        const tasks = await get(API.tasks + "?projekt_id=" + encodeURIComponent(currentProjekt.projekt_id));
+
+        renderTable(
+            "projektleiter-aufgabe-tbody",
+            tasks,
+            ["aufgabe_id", "titel", "beschreibung", "status"],
+        );
+    } catch (error) {
+        setMessage("projektleiter-aufgabe-list-message", error.message);
+    }
+}
 /* ==========================================================
    7. MITARBEITER
    ========================================================== */
